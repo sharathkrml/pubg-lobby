@@ -1,6 +1,5 @@
-import { useRef } from "react";
-import { Euler, SpotLightHelper } from "three";
-import { TextureLoader } from "three/src/loaders/TextureLoader";
+import { useRef, useEffect } from "react";
+import { Euler } from "three";
 import Male from "./Male";
 import Car from "./Car";
 import { degToRad } from "three/src/math/MathUtils";
@@ -9,11 +8,13 @@ import {
   Environment,
   OrbitControls,
   PerspectiveCamera,
-  useHelper,
   useTexture,
 } from "@react-three/drei";
 
 const Elements = () => {
+  const orbitControlRef = useRef(null);
+  const spotLightRef = useRef(null);
+
   const [colorMap, displacementMap, normalMap, roughnessMap, aoMap] =
     useTexture([
       "Grass/Color.jpg",
@@ -26,10 +27,16 @@ const Elements = () => {
   return (
     <>
       <PerspectiveCamera makeDefault position={[0, 3, 16]} />
-      <OrbitControls />
+      <OrbitControls ref={orbitControlRef} maxPolarAngle={degToRad(80)} />
       <Male position={[0, 3.2, 5]} castShadow />
-
+      <Car
+        castShadow
+        scale={2}
+        position={[-9, 0.9, -5]}
+        rotation={new Euler(degToRad(0), -degToRad(25), degToRad(0))}
+      />
       <ambientLight color="#ffffff" />
+      <spotLight color="#FFC300" ref={spotLightRef} position={[0, 20, 15]} />
       <mesh rotation={[-degToRad(90), 0, 0]} receiveShadow>
         <planeGeometry args={[100, 100, 10, 10]} />
         <meshStandardMaterial
@@ -40,7 +47,6 @@ const Elements = () => {
           roughnessMap={roughnessMap}
           roughness={10}
           metalness={0.2}
-          //   wireframe
           aoMap={aoMap}
         />
       </mesh>
@@ -48,7 +54,6 @@ const Elements = () => {
         <mesh scale={100}>
           <sphereGeometry args={[1, 32, 32]} />
           <meshBasicMaterial
-            // wireframe
             displacementScale={0}
             side={BackSide}
             map={sky[0]}
