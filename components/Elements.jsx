@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { Euler } from "three";
 import Male from "./Male";
 import Car from "./Car";
@@ -24,10 +24,16 @@ const Elements = () => {
       "Grass/AmbientOcclusion.jpg",
     ]);
   const sky = useTexture(["sky.jpg"]);
+
   return (
     <>
       <PerspectiveCamera makeDefault position={[0, 3, 16]} />
-      <OrbitControls ref={orbitControlRef} maxPolarAngle={degToRad(80)} />
+      <OrbitControls
+        ref={orbitControlRef}
+        maxPolarAngle={degToRad(80)}
+        autoRotate
+        autoRotateSpeed={1}
+      />
       <Male position={[0, 3.2, 5]} castShadow />
       <Car
         castShadow
